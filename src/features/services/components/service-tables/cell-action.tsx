@@ -9,6 +9,8 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Service } from '@/constants/data';
+import { toast } from '@/hooks/use-toast';
+import axios from 'axios';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -22,7 +24,17 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const onConfirm = async () => {};
+  const onConfirm = async () => {
+    setLoading(true);
+    // Delete service with axios
+    await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/services/delete/${data.id}`,{withCredentials:true});
+    setLoading(false);
+    toast({
+      title: 'Success',
+      description: 'Service deleted successfully',
+    });
+    setOpen(false);
+  };
 
   return (
     <>

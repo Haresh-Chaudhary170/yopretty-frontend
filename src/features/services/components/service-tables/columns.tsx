@@ -10,8 +10,9 @@ export const columns: ColumnDef<Service>[] = [
     header: 'IMAGE',
     cell: ({ row }) => {
       console.log(row.original.images);
+      console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${(row.getValue('images') as string[])[0]}`)
       return (
-        <div className='relative aspect-square'>
+        <div className='relative aspect-square w-24'>
           <Image
             src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${(row.getValue('images') as string[])[0]}`}
             alt={row.getValue('name')}
@@ -29,7 +30,7 @@ export const columns: ColumnDef<Service>[] = [
   {
     accessorKey: 'category',
     header: 'CATEGORY',
-    cell:({row})=>{
+    cell: ({ row }) => {
       const category = row.getValue('category') as { name: string };
       return category.name;
     }
@@ -37,6 +38,10 @@ export const columns: ColumnDef<Service>[] = [
   {
     accessorKey: 'price',
     header: 'PRICE'
+  },
+  {
+    accessorKey: 'duration',
+    header: 'DURATION'
   },
   {
     accessorKey: 'description',

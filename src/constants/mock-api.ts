@@ -15,6 +15,7 @@ export type Service = {
   description: string;
   created_at: string;
   price: number;
+  duration:number;
   id: number;
   category: string;
   updated_at: string;
