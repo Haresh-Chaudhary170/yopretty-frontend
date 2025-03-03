@@ -3,7 +3,7 @@ import { RootState } from '@/store';
 import RegisterCustomer from '../custoomer-detail-form';
 import RegisterServiceProvider from '../service-provider-form';
 
-export default function StepTwo({ nextStep }: { nextStep: () => void }) {
+export default function StepTwo() {
   const role = useSelector((state: RootState) => state.auth.role);
   console.log(role)
 
@@ -11,7 +11,7 @@ export default function StepTwo({ nextStep }: { nextStep: () => void }) {
   return (
     <div>
       {
-        role == "CUSTOMER" ? (<RegisterCustomer />) : (<RegisterServiceProvider nextStep={nextStep} />)
+        role == "CUSTOMER" ? (<RegisterCustomer />) : (<RegisterServiceProvider />)
       }
     </div>
   );

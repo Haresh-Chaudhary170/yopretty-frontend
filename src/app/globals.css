@@ -116,3 +116,30 @@
   }
 }
 
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: #026ccd4f;
+}
+/* .fc-day-past{
+  background-color: #d0c5c5;
+} */
+
+.fc-off-day {
+  background-color: #ffc9c4 !important;
+  pointer-events: none;
+  position: relative;
+}
+
+.fc-off-day .off-day-reason {
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  padding: 2px 5px;
+  border-radius: 4px;
+  text-align: center;
+  white-space: nowrap;
+}

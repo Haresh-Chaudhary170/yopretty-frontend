@@ -29,7 +29,7 @@ export default function MultiStepForm() {
       </div>
     </div>
       }
-      {step === 2 && <StepTwo nextStep={nextStep} />}
+      {step === 2 && <StepTwo />}
       {step === 3 && role === 'SERVICE_PROVIDER' && <KycAndCertifications onComplete={handleCompletion} />}
     </div>
   );

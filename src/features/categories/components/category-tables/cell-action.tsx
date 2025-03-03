@@ -8,15 +8,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Service } from '@/constants/data';
 import { toast } from '@/hooks/use-toast';
 import axios from 'axios';
-import { CalendarCheck, Edit, MoreHorizontal, Star, Trash } from 'lucide-react';
+import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+type Category={
+  id: string;
+  name: string;
+  isActive: boolean;
+  description: string;
+  image: string;
+}
 interface CellActionProps {
-  data: Service;
+  data: Category;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -27,14 +33,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onConfirm = async () => {
     setLoading(true);
     // Delete service with axios
-    await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/services/delete/${data.id}`,{withCredentials:true});
+    await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/delete/${data.id}`,{withCredentials:true});
     setLoading(false);
     toast({
       title: 'Success',
-      description: 'Service deleted successfully',
+      description: 'Category deleted successfully',
     });
     setOpen(false);
-    router.push('/dashboard/service');
+    router.push('/dashboard/categories');
   };
 
   return (
@@ -56,21 +62,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/service/${data.id}`)}
+            onClick={() => router.push(`/dashboard/categories/${data.id}`)}
           >
             <Edit className='mr-2 h-4 w-4' /> Update
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/service/${data.id}`)}
-          >
-            <Star className='mr-2 h-4 w-4' /> Reviews
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/service/${data.id}`)}
-          >
-            <CalendarCheck className='mr-2 h-4 w-4' /> Appointments
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)} className='bg-red-300'>
+          <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className='mr-2 h-4 w-4' /> Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

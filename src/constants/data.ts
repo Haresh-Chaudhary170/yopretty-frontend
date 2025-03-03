@@ -38,10 +38,37 @@ export const navItems: NavItem[] = [
     items: [] // No child items
   },
   {
+    title: 'Calendar',
+    url: '#',
+    icon: 'calendar',
+    shortcut: ['c', 'c'],
+    isActive: true,
+    items: [
+      {
+        title: 'Appointments',
+        url: '/dashboard/calendar/appointments',
+        icon: 'calendar',
+        shortcut: ['c', 'c'],
+      },
+      {
+        title: 'Off Days',
+        url: '/dashboard/calendar/appointments',
+        icon: 'calendar',
+        shortcut: ['c', 'c'],
+      },
+      {
+        title: 'Working Days',
+        url: '/dashboard/calendar/appointments',
+        icon: 'calendar',
+        shortcut: ['c', 'c'],
+      }
+    ] // No child items
+  },
+  {
     title: 'Account',
     url: '#', // Placeholder as there is no direct link for the parent
-    icon: 'billing',
-    isActive: true,
+    icon: 'user',
+    isActive: false,
 
     items: [
       {
@@ -58,14 +85,14 @@ export const navItems: NavItem[] = [
       }
     ]
   },
-  {
-    title: 'Kanban',
-    url: '/dashboard/kanban',
-    icon: 'kanban',
-    shortcut: ['k', 'k'],
-    isActive: false,
-    items: [] // No child items
-  }
+  // {
+  //   title: 'Kanban',
+  //   url: '/dashboard/kanban',
+  //   icon: 'kanban',
+  //   shortcut: ['k', 'k'],
+  //   isActive: false,
+  //   items: [] // No child items
+  // }
 ];
 
 export interface SaleUser {

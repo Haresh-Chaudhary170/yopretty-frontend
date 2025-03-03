@@ -31,7 +31,8 @@ import {
   UserPen,
   UserX2Icon,
   X,
-  Layers2
+  Layers2,
+  CalendarRange
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -41,6 +42,7 @@ export const Icons = {
   logo: Command,
   login: LogIn,
   layer:Layers2,
+  calendar:CalendarRange,
   close: X,
   service: LucideShoppingBag,
   spinner: Loader2,

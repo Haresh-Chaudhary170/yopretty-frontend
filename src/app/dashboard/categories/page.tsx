@@ -1,76 +1,57 @@
-"use client";
+import PageContainer from '@/components/layout/page-container';
+import { buttonVariants } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import { Separator } from '@/components/ui/separator';
+import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
+import { searchParamsCache, serialize } from '@/lib/searchparams';
+import { cn } from '@/lib/utils';
+import { Plus } from 'lucide-react';
+import Link from 'next/link';
+import { SearchParams } from 'nuqs/server';
+import { Suspense } from 'react';
+import CategoryListingPage from '@/features/categories/components/category-listing';
+import CategoryTableAction from '@/features/categories/components/category-tables/category-table-action';
 
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
-import PageTitle from "@/components/PageTitle";
-import Link from "next/link";
-import CategoryTable from "./components/CategoryTable";
-
-type Category = {
-  id: string;
-  name: string;
+export const metadata = {
+  title: 'Dashboard: Categories'
 };
 
+type pageProps = {
+  searchParams: Promise<SearchParams>;
+};
 
-const Categories = () => {
-  const [data, setData] = useState<Category[]>([]);
-  const [filter, setFilter] = useState(""); // Search filter
-  const [filteredData, setFilteredData] = useState<Category[]>([]);
+export default async function Page(props: pageProps) {
+  const searchParams = await props.searchParams;
+  // Allow nested RSCs to access the search params (in a type-safe way)
+  searchParamsCache.parse(searchParams);
 
-  // const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      // setIsLoading(true);
-      try {
-        const response = await axios.get("/api/categories");
-        setFilteredData(response.data.categories)
-        setData(response.data.categories);
-      } catch {
-        toast.error("Failed to fetch categories");
-      }
-    };
-
-    fetchCategories();
-  }, []);
-  
-  useEffect(() => {
-    if (data && Array.isArray(data)) {
-      const filtered = data.filter((event) => {
-        const matchesSearch =
-          (event.name?.toLowerCase().includes(filter.toLowerCase()) || false)
-
-        return matchesSearch;
-      });
-
-      setFilteredData(filtered);
-    }
-  }, [filter, data]);
+  // This key is used for invoke suspense if any of the search params changed (used for filters).
+  const key = serialize({ ...searchParams });
 
   return (
-    <div className="flex flex-col gap-5 w-full">
-      <div className="flex justify-between items-center">
-        <PageTitle title="Category" />
-        <Link
-          href="/admin/categories/add"
-          className="bg-gray-800 hover:bg-gray-700 text-white py-1 px-3 rounded-lg"
+    <PageContainer scrollable={false}>
+      <div className='flex flex-1 flex-col space-y-4'>
+        <div className='flex items-start justify-between'>
+          <Heading
+            title='Categories'
+            description='Manage categories '
+          />
+          <Link
+            href='/dashboard/categories/new'
+            className={cn(buttonVariants(), 'text-xs md:text-sm')}
+          >
+            <Plus className='mr-2 h-4 w-4' /> Add New
+          </Link>
+        </div>
+        <Separator />
+        <CategoryTableAction />
+        <Suspense
+          key={key}
+          fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}
         >
-          <span>+ </span>Add Category
-        </Link>
+          <CategoryListingPage />
+        </Suspense>
       </div>
-
-      <input
-        type="text"
-        placeholder="Search by name"
-        className="border px-2 py-2 rounded-xl w-72"
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-      />
-
-      <CategoryTable data={filteredData} />
-    </div>
+    </PageContainer>
   );
-};
-
-export default Categories;
+}
