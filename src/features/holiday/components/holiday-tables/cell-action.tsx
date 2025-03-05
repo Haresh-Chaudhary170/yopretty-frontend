@@ -14,19 +14,15 @@ import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-interface Event {
+type Category={
   id: string;
-  service: {
-    name: string;
-    id: string;
-  };
-  timeSlot: {
-    startTime: string;
-    endTime: string;
-  };
+  name: string;
+  isActive: boolean;
+  description: string;
+  image: string;
 }
 interface CellActionProps {
-  data: Event;
+  data: Category;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {

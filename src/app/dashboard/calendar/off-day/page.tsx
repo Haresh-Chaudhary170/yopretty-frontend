@@ -1,209 +1,57 @@
-"use client"
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import { Suspense, useEffect, useState } from 'react'
-import PageContainer from '@/components/layout/page-container'
-import { Heading } from '@/components/ui/heading'
-// import Link from 'next/link'
-// import { cn } from '@/lib/utils'
-// import { buttonVariants } from '@/components/ui/button'
-import { Separator } from '@radix-ui/react-separator'
-import axios from 'axios'
+import PageContainer from '@/components/layout/page-container';
+import { buttonVariants } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import { Separator } from '@/components/ui/separator';
+import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
+import { searchParamsCache, serialize } from '@/lib/searchparams';
+import { cn } from '@/lib/utils';
+import { Plus } from 'lucide-react';
+import Link from 'next/link';
+import { SearchParams } from 'nuqs/server';
+import { Suspense } from 'react';
+import HolidayListingPage from '@/features/holiday/components/holiday-listing';
+import HolidayTableAction from '@/features/holiday/components/holiday-tables/holiday-table-action';
 
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import AppointmentTableAction from '@/features/appointments/components/appointment-tables/appointment-table-action'
-import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton'
+export const metadata = {
+  title: 'Dashboard: Holiday'
+};
 
+type pageProps = {
+  searchParams: Promise<SearchParams>;
+};
 
-interface Event {
-    id: string,
-    service: {
-        name: string,
-        id: string
-    },
-    timeSlot: {
-        startTime: string,
-        endTime: string
-    }
+export default async function Page(props: pageProps) {
+  const searchParams = await props.searchParams;
+  // Allow nested RSCs to access the search params (in a type-safe way)
+  searchParamsCache.parse(searchParams);
 
-}
+  // This key is used for invoke suspense if any of the search params changed (used for filters).
+  const key = serialize({ ...searchParams });
 
-export default function Home() {
-
-    const [allEvents, setAllEvents] = useState<Event[]>([]);
-    const [view, setView] = useState("CALENDAR");
-
-
-    useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/bookings/provider`, { withCredentials: true });
-                const {bookings } = response.data;
-
-
-                // setAllEvents(data.map((event: { service: { name: string }, timeSlot: { startTime: string, endTime: string }, id: number }) => ({
-                //     title: event.service.name,
-                //     start: new Date(event.timeSlot.startTime),
-                //     end: new Date(event.timeSlot.endTime),
-                //     allDay: false,
-                //     id: event.service.name,
-                // })));
-
-                setAllEvents(bookings)
-
-                console.log(response.data);
-            } catch (error) {
-                console.error('Error fetching events:', error);
-            }
-        };
-
-        fetchEvents();
-    }, []);
-    // useEffect(() => {
-    //     const draggableEl = document.getElementById('draggable-el')
-    //     if (draggableEl) {
-    //         new Draggable(draggableEl, {
-    //             itemSelector: ".fc-event",
-    //             eventData: function (eventEl) {
-    //                 const title = eventEl.getAttribute("title")
-    //                 const id = eventEl.getAttribute("data")
-    //                 const start = eventEl.getAttribute("start")
-    //                 return { title, id, start }
-    //             }
-    //         })
-    //     }
-    // }, [])
-
-
-    return (
-        <PageContainer scrollable={false}>
-            <div className='flex flex-1 flex-col space-y-4'>
-                <div className='flex items-start justify-between'>
-                    <Heading
-                        title='Appointments'
-                        description='Manage Schedule and Appointments '
-                    />
-                    <Select
-                        onValueChange={
-                            (value) => {
-                                setView(value)
-                            }
-                        }
-                        value={view}
-                    >
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="View" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="CALENDAR">Calendar View</SelectItem>
-                            <SelectItem value="TABLE">Table View</SelectItem>
-                        </SelectContent>
-                    </Select>
-
-                </div>
-                <Separator />
-                <main className="">
-                    <div className="">
-                        {
-                            view == "CALENDAR" ? (
-                                <div className="">
-                                    <FullCalendar
-                                        select={
-                                            (e) => {
-                                                console.log(e)
-                                            }
-                                        }
-                                        plugins={[
-                                            dayGridPlugin,
-                                            interactionPlugin,
-                                            timeGridPlugin
-                                        ]}
-                                        headerToolbar={{
-                                            left: 'prev,next today',
-                                            center: 'title',
-                                            right: 'resourceTimelineWook, dayGridMonth,timeGridWeek,timeGridDay'
-                                        }}
-                                        // validRange={{
-                                        //     start: new Date()
-                                        // }}
-                                        events={
-                                            allEvents?.map(
-                                                (event) => ({
-                                                    id: event.id,
-                                                    title: event.service.name,
-                                                    start: event.timeSlot.startTime,
-                                                    end: event.timeSlot.endTime,
-                                                    allDay: false
-                                                })
-                                            )
-                                        }
-                                        nowIndicator={true}
-                                        editable={true}
-                                        droppable={true}
-                                        selectable={true}
-                                        selectMirror={true}
-                                    // dateClick={}
-                                    // drop={(data: DropArg) => addEvent(data)}
-                                    // eventClick={(data: { event: { id: string } }) => handleDeleteModal(data)}
-                                    />
-                                </div>
-                            ) : (
-                                <div>
-                                    <Separator />
-                                    <AppointmentTableAction />
-                                    <Suspense
-                                        key="unique-key"
-                                        fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}
-                                    >
-                                        {/* normal table  */}
-                                        <div className="">
-                                            <table className="w-full">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Service</th>
-                                                        <th>Start Time</th>
-                                                        <th>End Time</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {
-                                                        allEvents?.map((event) => (
-                                                            <tr key={event.id}>
-                                                                <td>{event.service.name}</td>
-                                                                <td>{event.timeSlot.startTime}</td>
-                                                                <td>{event.timeSlot.endTime}</td>
-                                                                <td>Pending</td>
-                                                                <td>
-                                                                    <AppointmentTableAction />
-                                                                </td>
-                                                            </tr>
-                                                        ))
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                    </Suspense>
-                                </div>
-                            )
-                        }
-
-
-                    </div>
-                </main >
-            </div>
-        </PageContainer>
-
-
-    )
+  return (
+    <PageContainer scrollable={false}>
+      <div className='flex flex-1 flex-col space-y-4'>
+        <div className='flex items-start justify-between'>
+          <Heading
+            title='Off Days & Holidays'
+            description='Manage Off Days & Holidays '
+          />
+          <Link
+            href='/dashboard/calendar/off-day/new'
+            className={cn(buttonVariants(), 'text-xs md:text-sm')}
+          >
+            <Plus className='mr-2 h-4 w-4' /> Add New
+          </Link>
+        </div>
+        <Separator />
+        <HolidayTableAction />
+        <Suspense
+          key={key}
+          fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}
+        >
+          <HolidayListingPage />
+        </Suspense>
+      </div>
+    </PageContainer>
+  );
 }

@@ -3,17 +3,17 @@
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
 import {
-  useAppointmentTableFilters
-} from './use-appointment-table-filters';
+  useHolidayTableFilters
+} from './use-holiday-table-filters';
 
-export default function AppointmentTableAction() {
+export default function HolidayTableAction() {
   const {
     isAnyFilterActive,
     resetFilters,
     searchQuery,
     setPage,
     setSearchQuery
-  } = useAppointmentTableFilters();
+  } = useHolidayTableFilters();
   return (
     <div className='flex flex-wrap items-center gap-4'>
       <DataTableSearch

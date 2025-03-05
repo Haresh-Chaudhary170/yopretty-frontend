@@ -1,15 +1,15 @@
 'use client'
 
 import axios from 'axios';
-import { DataTable as AppointmentTable } from '@/components/ui/table/data-table';
-import { columns } from './appointment-tables/columns';
+import { DataTable as HolidayTable } from '@/components/ui/table/data-table';
+import { columns } from './holiday-tables/columns';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 
-const AppointmentListingPage=()=> {
-    const [bookings, setBookings] = useState([]);
-    const [total_bookings, setTotal_bookings] = useState(0);
+const HolidayListingPage=()=> {
+    const [dateExclusions, setDateExclusions] = useState([]);
+    const [total_dateExclusions, setTotal_dateExclusions] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
   // Showcasing the use of search params cache in nested RSCs
@@ -29,17 +29,17 @@ const AppointmentListingPage=()=> {
     const fetchServices = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/bookings/provider`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/calendar/get-date-exclusion`,
           {
             params: filters,
             withCredentials: true, // Include cookies in API requests
           }
         );
 
-        const { total_bookings, bookings } = response.data;
-        console.log(bookings)
-        setBookings(bookings);
-        setTotal_bookings(total_bookings);
+        const { total_dateExclusions, dateExclusions } = response.data;
+        console.log(dateExclusions)
+        setDateExclusions(dateExclusions);
+        setTotal_dateExclusions(total_dateExclusions);
       } catch (error) {
         console.error('Error fetching services:', error);
         setError('Error fetching services. Please try again later.');
@@ -59,12 +59,12 @@ const AppointmentListingPage=()=> {
     return <div>{error}</div>;
   }
   return (
-    <AppointmentTable
+    <HolidayTable
       columns={columns}
-      data={bookings}
-      totalItems={total_bookings}
+      data={dateExclusions}
+      totalItems={total_dateExclusions}
       />
   );
 }
 
-export default AppointmentListingPage;
+export default HolidayListingPage;

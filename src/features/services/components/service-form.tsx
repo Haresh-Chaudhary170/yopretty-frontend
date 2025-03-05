@@ -173,7 +173,7 @@ export default function ServiceForm({
       });
     }
 
-    if (initialData?.id != '') {
+    if (initialData?.id) {
       setLoading(true);
       try {
         const response = await axios.put(
@@ -236,7 +236,7 @@ export default function ServiceForm({
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/get-all`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/get-all`,{withCredentials:true});
         setCategories(response.data);
         console.log(response.data);
       } catch (error) {
@@ -398,7 +398,7 @@ export default function ServiceForm({
                 loading ? (
                   <Loader />
                 ) : (
-                  <span>{pageTitle === 'Create Service' ? 'Create' : 'Update'} Service</span>
+                  <span>{pageTitle === 'Create New Service' ? 'Create' : 'Update'} Service</span>
                 )
               }
             </Button>

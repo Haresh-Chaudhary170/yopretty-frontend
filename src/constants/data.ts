@@ -52,16 +52,10 @@ export const navItems: NavItem[] = [
       },
       {
         title: 'Off Days',
-        url: '/dashboard/calendar/appointments',
+        url: '/dashboard/calendar/off-day',
         icon: 'calendar',
         shortcut: ['c', 'c'],
       },
-      {
-        title: 'Working Days',
-        url: '/dashboard/calendar/appointments',
-        icon: 'calendar',
-        shortcut: ['c', 'c'],
-      }
     ] // No child items
   },
   {

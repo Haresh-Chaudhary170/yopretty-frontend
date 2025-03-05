@@ -12,9 +12,9 @@ export const CATEGORY_OPTIONS = [
   { value: 'Groceries', label: 'Groceries' },
   { value: 'Books', label: 'Books' },
   { value: 'Jewelry', label: 'Jewelry' },
-  { value: 'Beauty Appointments', label: 'Beauty Appointments' }
+  { value: 'Beauty Holidays', label: 'Beauty Holidays' }
 ];
-export function useAppointmentTableFilters() {
+export function useHolidayTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     'q',
     searchParams.q
@@ -22,8 +22,8 @@ export function useAppointmentTableFilters() {
       .withDefault('')
   );
 
-  const [appointmentsFilter, setAppointmentFilter] = useQueryState(
-    'appointments',
+  const [holidaysFilter, setHolidayFilter] = useQueryState(
+    'holidays',
     searchParams.categories.withOptions({ shallow: false }).withDefault('')
   );
 
@@ -34,14 +34,14 @@ export function useAppointmentTableFilters() {
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
-    setAppointmentFilter(null);
+    setHolidayFilter(null);
 
     setPage(1);
-  }, [setSearchQuery, setAppointmentFilter, setPage]);
+  }, [setSearchQuery, setHolidayFilter, setPage]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || !!appointmentsFilter;
-  }, [searchQuery, appointmentsFilter]);
+    return !!searchQuery || !!holidaysFilter;
+  }, [searchQuery, holidaysFilter]);
 
   return {
     searchQuery,
@@ -50,7 +50,7 @@ export function useAppointmentTableFilters() {
     setPage,
     resetFilters,
     isAnyFilterActive,
-    appointmentsFilter,
-    setAppointmentFilter
+    holidaysFilter,
+    setHolidayFilter
   };
 }
